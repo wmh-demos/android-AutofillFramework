@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.android.autofillframework.CommonUtil.DEBUG;
 import static com.example.android.autofillframework.CommonUtil.TAG;
 import static com.example.android.autofillframework.CommonUtil.VERBOSE;
 import static com.example.android.autofillframework.CommonUtil.bundleToString;
@@ -59,18 +60,14 @@ public class MyAutofillService extends AutofillService {
                     getApplicationContext().getString(R.string.invalid_package_signature));
             return;
         }
+
         final Bundle data = request.getClientState();
         if (VERBOSE) {
             Log.v(TAG, "onFillRequest(): data=" + bundleToString(data));
             dumpStructure(structure);
         }
 
-        cancellationSignal.setOnCancelListener(new CancellationSignal.OnCancelListener() {
-            @Override
-            public void onCancel() {
-                Log.w(TAG, "Cancel autofill not implemented in this sample.");
-            }
-        });
+        cancellationSignal.setOnCancelListener(() -> Log.w(TAG, "Cancel autofill not implemented in this sample."));
         // Parse AutoFill data in Activity
         StructureParser parser = new StructureParser(getApplicationContext(), structure);
         // TODO: try / catch on other places (onSave, auth activity, etc...)
@@ -83,11 +80,13 @@ public class MyAutofillService extends AutofillService {
             callback.onFailure(e.getMessage());
             return;
         }
+
         AutofillFieldMetadataCollection autofillFields = parser.getAutofillFields();
         FillResponse.Builder responseBuilder = new FillResponse.Builder();
         // Check user's settings for authenticating Responses and Datasets.
         boolean responseAuth = MyPreferences.getInstance(this).isResponseAuth();
         AutofillId[] autofillIds = autofillFields.getAutofillIds();
+
         if (responseAuth && !Arrays.asList(autofillIds).isEmpty()) {
             // If the entire Autofill Response is authenticated, AuthActivity is used
             // to generate Response.
@@ -95,8 +94,7 @@ public class MyAutofillService extends AutofillService {
             RemoteViews presentation = AutofillHelper
                     .newRemoteViews(getPackageName(), getString(R.string.autofill_sign_in_prompt),
                             R.drawable.ic_lock_black_24dp);
-            responseBuilder
-                    .setAuthentication(autofillIds, sender, presentation);
+            responseBuilder.setAuthentication(autofillIds, sender, presentation);
             callback.onSuccess(responseBuilder.build());
         } else {
             boolean datasetAuth = MyPreferences.getInstance(this).isDatasetAuth();
@@ -111,8 +109,10 @@ public class MyAutofillService extends AutofillService {
 
     @Override
     public void onSaveRequest(SaveRequest request, SaveCallback callback) {
+        if (DEBUG) Log.d(TAG, "onSaveRequest");
         List<FillContext> context = request.getFillContexts();
         final AssistStructure structure = context.get(context.size() - 1).getStructure();
+
         String packageName = structure.getActivityComponent().getPackageName();
         if (!SharedPrefsPackageVerificationRepository.getInstance()
                 .putPackageSignatures(getApplicationContext(), packageName)) {
@@ -120,14 +120,18 @@ public class MyAutofillService extends AutofillService {
                     getApplicationContext().getString(R.string.invalid_package_signature));
             return;
         }
+
         final Bundle data = request.getClientState();
         if (VERBOSE) {
             Log.v(TAG, "onSaveRequest(): data=" + bundleToString(data));
             dumpStructure(structure);
         }
+
         StructureParser parser = new StructureParser(getApplicationContext(), structure);
         parser.parseForSave();
+
         FilledAutofillFieldCollection filledAutofillFieldCollection = parser.getClientFormData();
+        if (DEBUG) Log.d(TAG, "FilledAutofillFieldCollection : " + filledAutofillFieldCollection);
         SharedPrefsAutofillRepository.getInstance()
                 .saveFilledAutofillFieldCollection(this, filledAutofillFieldCollection);
     }

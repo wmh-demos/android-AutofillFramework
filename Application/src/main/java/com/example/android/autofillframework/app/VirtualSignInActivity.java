@@ -46,7 +46,7 @@ public class VirtualSignInActivity extends AppCompatActivity {
 
         setContentView(R.layout.virtual_login_activity);
 
-        mCustomVirtualView = (CustomVirtualView) findViewById(R.id.custom_view);
+        mCustomVirtualView = findViewById(R.id.custom_view);
 
         CustomVirtualView.Partition credentialsPartition =
                 mCustomVirtualView.addPartition(getString(R.string.partition_credentials));
