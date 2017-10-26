@@ -42,15 +42,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         NavigationItem loginEditTexts = findViewById(R.id.standardViewSignInButton);
         NavigationItem loginCustomVirtual = findViewById(R.id.virtualViewSignInButton);
+        loginCustomVirtual.setVisibility(View.GONE);
         NavigationItem creditCard = findViewById(R.id.creditCardButton);
+        creditCard.setVisibility(View.GONE);
         NavigationItem creditCardSpinners = findViewById(R.id.creditCardSpinnersButton);
+        creditCardSpinners.setVisibility(View.GONE);
         NavigationItem loginAutoComplete = findViewById(R.id.standardLoginWithAutoCompleteButton);
+        loginAutoComplete.setVisibility(View.GONE);
         NavigationItem emailCompose = findViewById(R.id.emailComposeButton);
+        emailCompose.setVisibility(View.GONE);
         NavigationItem creditCardCompoundView = findViewById(R.id.creditCardCompoundViewButton);
+        creditCardCompoundView.setVisibility(View.GONE);
         NavigationItem creditCardDatePicker = findViewById(R.id.creditCardDatePickerButton);
+        creditCardDatePicker.setVisibility(View.GONE);
         NavigationItem creditCardAntiPatternPicker = findViewById(R.id.creditCardAntiPatternButton);
+        creditCardAntiPatternPicker.setVisibility(View.GONE);
         NavigationItem multiplePartitions = findViewById(R.id.multiplePartitionsButton);
+        multiplePartitions.setVisibility(View.GONE);
         NavigationItem loginWebView = findViewById(R.id.webviewSignInButton);
+        loginWebView.setVisibility(View.GONE);
         loginEditTexts.setNavigationButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
