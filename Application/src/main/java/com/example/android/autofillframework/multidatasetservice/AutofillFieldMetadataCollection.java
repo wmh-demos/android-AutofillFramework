@@ -71,4 +71,15 @@ public final class AutofillFieldMetadataCollection {
     public List<String> getAllHints() {
         return mAllAutofillHints;
     }
+
+    @Override
+    public String toString() {
+        return "AutofillFieldMetadataCollection=[" +
+                "mAutofillIds=" + mAutofillIds + "," +
+                "mAutofillHintsToFieldsMap=" + mAutofillHintsToFieldsMap + "," +
+                "mAllAutofillHints=" + mAllAutofillHints + "," +
+                "mSize=" + mSize + "," +
+                "mSaveType=" + mSaveType +
+                "]";
+    }
 }

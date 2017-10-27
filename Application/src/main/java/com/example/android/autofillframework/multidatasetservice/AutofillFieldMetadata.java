@@ -18,6 +18,8 @@ package com.example.android.autofillframework.multidatasetservice;
 import android.app.assist.AssistStructure.ViewNode;
 import android.view.autofill.AutofillId;
 
+import java.util.Arrays;
+
 import static com.example.android.autofillframework.multidatasetservice.AutofillHints.convertToStoredHintNames;
 import static com.example.android.autofillframework.multidatasetservice.AutofillHints.filterForSupportedHints;
 
@@ -82,5 +84,17 @@ public class AutofillFieldMetadata {
 
     public boolean isFocused() {
         return mFocused;
+    }
+
+    @Override
+    public String toString() {
+        return "AutofillFieldMetadata=[" +
+                "mSaveType=" + mSaveType + "," +
+                "mAutofillHints=" + Arrays.toString(mAutofillHints) + "," +
+                "mAutofillId=" + mAutofillId + "," +
+                "mAutofillType=" + mAutofillType + "," +
+                "mAutofillOptions=" + Arrays.toString(mAutofillOptions) + "," +
+                "mFocused=" + mFocused +
+                "]";
     }
 }

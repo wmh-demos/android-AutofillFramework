@@ -51,8 +51,12 @@ public class MyAutofillService extends AutofillService {
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal,
             FillCallback callback) {
+
+        //从FillRequest获得AssistStructure对象
         AssistStructure structure = request.getFillContexts()
                 .get(request.getFillContexts().size() - 1).getStructure();
+
+        //校验包名
         String packageName = structure.getActivityComponent().getPackageName();
         if (!SharedPrefsPackageVerificationRepository.getInstance()
                 .putPackageSignatures(getApplicationContext(), packageName)) {
@@ -61,28 +65,29 @@ public class MyAutofillService extends AutofillService {
             return;
         }
 
-        final Bundle data = request.getClientState();
         if (VERBOSE) {
+            final Bundle data = request.getClientState();
             Log.v(TAG, "onFillRequest(): data=" + bundleToString(data));
             dumpStructure(structure);
         }
 
         cancellationSignal.setOnCancelListener(() -> Log.w(TAG, "Cancel autofill not implemented in this sample."));
-        // Parse AutoFill data in Activity
+
+        // 使用StructureParser解析AssistStructure
         StructureParser parser = new StructureParser(getApplicationContext(), structure);
-        // TODO: try / catch on other places (onSave, auth activity, etc...)
         try {
             parser.parseForFill();
         } catch (SecurityException e) {
-            // TODO: handle cases where DAL didn't pass by showing a custom UI asking the user
-            // to confirm the mapping. Might require subclassing SecurityException.
             Log.w(TAG, "Security exception handling " + request, e);
             callback.onFailure(e.getMessage());
             return;
         }
 
+        // 使用StructureParser读取AutofillFieldMetadataCollection
         AutofillFieldMetadataCollection autofillFields = parser.getAutofillFields();
+
         FillResponse.Builder responseBuilder = new FillResponse.Builder();
+
         // Check user's settings for authenticating Responses and Datasets.
         boolean responseAuth = MyPreferences.getInstance(this).isResponseAuth();
         AutofillId[] autofillIds = autofillFields.getAutofillIds();

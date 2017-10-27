@@ -104,6 +104,7 @@ final class StructureParser {
 
             if (filteredHints != null && filteredHints.length > 0) {
                 if (forFill) {
+                    if (DEBUG) Log.d(TAG, "viewnode : " + viewNode + " add AutofillFieldMetadata");
                     mAutofillFields.add(new AutofillFieldMetadata(viewNode));
                 } else {
                     FilledAutofillField filledAutofillField =
@@ -113,10 +114,16 @@ final class StructureParser {
                     if (autofillValue.isText()) {
                         // Using toString of AutofillValue.getTextValue in order to save it to
                         // SharedPreferences.
+                        if (DEBUG) Log.d(TAG, "viewnode : " + viewNode + " setTextValue : "
+                                + autofillValue.getTextValue().toString());
                         filledAutofillField.setTextValue(autofillValue.getTextValue().toString());
                     } else if (autofillValue.isDate()) {
+                        if (DEBUG) Log.d(TAG, "viewnode : " + viewNode + " setTextValue : "
+                                + autofillValue.getDateValue());
                         filledAutofillField.setDateValue(autofillValue.getDateValue());
                     } else if (autofillValue.isList()) {
+                        if (DEBUG) Log.d(TAG, "viewnode : " + viewNode + " setTextValue : "
+                                + autofillValue.getListValue());
                         filledAutofillField.setListValue(viewNode.getAutofillOptions(),
                                 autofillValue.getListValue());
                     }
@@ -127,7 +134,6 @@ final class StructureParser {
         }
 
         int childrenSize = viewNode.getChildCount();
-        if (DEBUG) Log.d(TAG, "parseLocked childrenSize: " + childrenSize);
         if (childrenSize > 0) {
             for (int i = 0; i < childrenSize; i++) {
                 parseLocked(forFill, viewNode.getChildAt(i), validWebDomain);
@@ -136,10 +142,12 @@ final class StructureParser {
     }
 
     public AutofillFieldMetadataCollection getAutofillFields() {
+        if (DEBUG) Log.d(TAG, "getAutofillFields : " + mAutofillFields);
         return mAutofillFields;
     }
 
     public FilledAutofillFieldCollection getClientFormData() {
+        if (DEBUG) Log.d(TAG, "getClientFormData : " + mFilledAutofillFieldCollection);
         return mFilledAutofillFieldCollection;
     }
 }
