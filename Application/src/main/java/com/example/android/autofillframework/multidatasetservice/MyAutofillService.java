@@ -110,30 +110,34 @@ public class MyAutofillService extends AutofillService {
     @Override
     public void onSaveRequest(SaveRequest request, SaveCallback callback) {
         if (DEBUG) Log.d(TAG, "onSaveRequest");
+        //从SaveRequest对象中获取AssistStructure对象
         List<FillContext> context = request.getFillContexts();
         final AssistStructure structure = context.get(context.size() - 1).getStructure();
 
+        //校验包名
         String packageName = structure.getActivityComponent().getPackageName();
         if (!SharedPrefsPackageVerificationRepository.getInstance()
                 .putPackageSignatures(getApplicationContext(), packageName)) {
-            callback.onFailure(
-                    getApplicationContext().getString(R.string.invalid_package_signature));
+            callback.onFailure(getApplicationContext().getString(R.string.invalid_package_signature));
             return;
         }
 
-        final Bundle data = request.getClientState();
         if (VERBOSE) {
+            final Bundle data = request.getClientState();
             Log.v(TAG, "onSaveRequest(): data=" + bundleToString(data));
             dumpStructure(structure);
         }
 
+        //解析AssistStructure对象
         StructureParser parser = new StructureParser(getApplicationContext(), structure);
         parser.parseForSave();
 
+        //从StructureParser获取保存的数据
         FilledAutofillFieldCollection filledAutofillFieldCollection = parser.getClientFormData();
-        if (DEBUG) Log.d(TAG, "FilledAutofillFieldCollection : " + filledAutofillFieldCollection);
-        SharedPrefsAutofillRepository.getInstance()
-                .saveFilledAutofillFieldCollection(this, filledAutofillFieldCollection);
+
+        //保存数据
+        SharedPrefsAutofillRepository.getInstance().saveFilledAutofillFieldCollection(
+                this, filledAutofillFieldCollection);
     }
 
     @Override
