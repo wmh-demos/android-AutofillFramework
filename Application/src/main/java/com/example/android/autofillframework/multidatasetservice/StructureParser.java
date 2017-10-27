@@ -60,18 +60,21 @@ final class StructureParser {
      */
     private void parse(boolean forFill) {
         if (DEBUG) Log.d(TAG, "Parsing structure for " + mStructure.getActivityComponent());
+
         int nodes = mStructure.getWindowNodeCount();
         mFilledAutofillFieldCollection = new FilledAutofillFieldCollection();
+
         StringBuilder webDomain = new StringBuilder();
         for (int i = 0; i < nodes; i++) {
             WindowNode node = mStructure.getWindowNodeAt(i);
             ViewNode view = node.getRootViewNode();
             parseLocked(forFill, view, webDomain);
         }
+
         if (webDomain.length() > 0) {
             String packageName = mStructure.getActivityComponent().getPackageName();
-            boolean valid = SharedPrefsDigitalAssetLinksRepository.getInstance().isValid(mContext,
-                    webDomain.toString(), packageName);
+            boolean valid = SharedPrefsDigitalAssetLinksRepository.getInstance()
+                    .isValid(mContext, webDomain.toString(), packageName);
             if (!valid) {
                 throw new SecurityException(mContext.getString(
                         R.string.invalid_link_association, webDomain, packageName));
@@ -97,8 +100,8 @@ final class StructureParser {
         }
 
         if (viewNode.getAutofillHints() != null) {
-            String[] filteredHints = AutofillHints.filterForSupportedHints(
-                    viewNode.getAutofillHints());
+            String[] filteredHints = AutofillHints.filterForSupportedHints(viewNode.getAutofillHints());
+
             if (filteredHints != null && filteredHints.length > 0) {
                 if (forFill) {
                     mAutofillFields.add(new AutofillFieldMetadata(viewNode));
@@ -106,6 +109,7 @@ final class StructureParser {
                     FilledAutofillField filledAutofillField =
                             new FilledAutofillField(viewNode.getAutofillHints());
                     AutofillValue autofillValue = viewNode.getAutofillValue();
+
                     if (autofillValue.isText()) {
                         // Using toString of AutofillValue.getTextValue in order to save it to
                         // SharedPreferences.
@@ -116,11 +120,14 @@ final class StructureParser {
                         filledAutofillField.setListValue(viewNode.getAutofillOptions(),
                                 autofillValue.getListValue());
                     }
+
                     mFilledAutofillFieldCollection.add(filledAutofillField);
                 }
             }
         }
+
         int childrenSize = viewNode.getChildCount();
+        if (DEBUG) Log.d(TAG, "parseLocked childrenSize: " + childrenSize);
         if (childrenSize > 0) {
             for (int i = 0; i < childrenSize; i++) {
                 parseLocked(forFill, viewNode.getChildAt(i), validWebDomain);
