@@ -146,6 +146,7 @@ public class MyAutofillService extends AutofillService {
 
         //从StructureParser获取保存的数据
         FilledAutofillFieldCollection filledAutofillFieldCollection = parser.getClientFormData();
+        if (DEBUG) Log.d(TAG, "getClientFormData : " + filledAutofillFieldCollection);
 
         //保存数据
         SharedPrefsAutofillRepository.getInstance().saveFilledAutofillFieldCollection(

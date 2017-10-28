@@ -132,4 +132,13 @@ public class FilledAutofillField {
         result = 31 * result + (mToggleValue != null ? mToggleValue.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "FilledAutofillField=[" +
+                "mTextValue=" + mTextValue + "," +
+                "mDateValue=" + mDateValue + "," +
+                "mToggleValue=" + mToggleValue +
+                "]";
+    }
 }

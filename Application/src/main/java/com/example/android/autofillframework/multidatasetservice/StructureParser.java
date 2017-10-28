@@ -147,7 +147,6 @@ final class StructureParser {
     }
 
     public FilledAutofillFieldCollection getClientFormData() {
-        if (DEBUG) Log.d(TAG, "getClientFormData : " + mFilledAutofillFieldCollection);
         return mFilledAutofillFieldCollection;
     }
 }

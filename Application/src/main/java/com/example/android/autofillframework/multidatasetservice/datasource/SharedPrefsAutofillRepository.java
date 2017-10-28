@@ -90,11 +90,18 @@ public class SharedPrefsAutofillRepository implements AutofillDataSource {
     @Override
     public void saveFilledAutofillFieldCollection(Context context,
             FilledAutofillFieldCollection filledAutofillFieldCollection) {
+        //获取DataSet名称
         String datasetName = "dataset-" + getDatasetNumber(context);
+
+        //设置DataSet名称
         filledAutofillFieldCollection.setDatasetName(datasetName);
+
         Set<String> allAutofillData = getAllAutofillDataStringSet(context);
+//        if (DEBUG) Log.d(TAG, "allAutofillData : " + allAutofillData);
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         allAutofillData.add(gson.toJson(filledAutofillFieldCollection));
+
         saveAllAutofillDataStringSet(context, allAutofillData);
         incrementDatasetNumber(context);
     }

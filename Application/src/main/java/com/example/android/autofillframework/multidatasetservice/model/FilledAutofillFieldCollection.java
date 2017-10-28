@@ -45,7 +45,7 @@ public final class FilledAutofillFieldCollection {
     private String mDatasetName;
 
     public FilledAutofillFieldCollection() {
-        this(null, new HashMap<String, FilledAutofillField>());
+        this(null, new HashMap<>());
     }
 
     public FilledAutofillFieldCollection(String datasetName, HashMap<String, FilledAutofillField> hintMap) {
@@ -230,5 +230,13 @@ public final class FilledAutofillFieldCollection {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "FilledAutofillFieldCollection=[" +
+                "mDatasetName=" + mDatasetName + "," +
+                "mHintMap=" + mHintMap +
+                "]";
     }
 }
