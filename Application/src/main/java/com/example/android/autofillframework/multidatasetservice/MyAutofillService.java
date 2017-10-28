@@ -56,7 +56,8 @@ public class MyAutofillService extends AutofillService {
         AssistStructure structure = request.getFillContexts()
                 .get(request.getFillContexts().size() - 1).getStructure();
 
-        //校验包名
+        //如果是第一次请求，则保存包名与签名的映射关系
+        //否则校验签名与保存的值是否相等
         String packageName = structure.getActivityComponent().getPackageName();
         if (!SharedPrefsPackageVerificationRepository.getInstance()
                 .putPackageSignatures(getApplicationContext(), packageName)) {
@@ -126,7 +127,8 @@ public class MyAutofillService extends AutofillService {
         List<FillContext> context = request.getFillContexts();
         final AssistStructure structure = context.get(context.size() - 1).getStructure();
 
-        //校验包名
+        //如果是第一次请求，则保存包名与签名的映射关系
+        //否则校验签名与保存的值是否相等
         String packageName = structure.getActivityComponent().getPackageName();
         if (!SharedPrefsPackageVerificationRepository.getInstance()
                 .putPackageSignatures(getApplicationContext(), packageName)) {
