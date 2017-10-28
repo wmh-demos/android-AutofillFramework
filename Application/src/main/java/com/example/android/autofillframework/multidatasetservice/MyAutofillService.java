@@ -83,7 +83,7 @@ public class MyAutofillService extends AutofillService {
             return;
         }
 
-        // 使用StructureParser读取AutofillFieldMetadataCollection
+        // 使用StructureParser获得AutofillFieldMetadataCollection
         AutofillFieldMetadataCollection autofillFields = parser.getAutofillFields();
 
         FillResponse.Builder responseBuilder = new FillResponse.Builder();
@@ -91,6 +91,7 @@ public class MyAutofillService extends AutofillService {
         // Check user's settings for authenticating Responses and Datasets.
         boolean responseAuth = MyPreferences.getInstance(this).isResponseAuth();
         AutofillId[] autofillIds = autofillFields.getAutofillIds();
+        if (DEBUG) Log.d(TAG, "autofillIds : " + Arrays.toString(autofillIds));
 
         if (responseAuth && !Arrays.asList(autofillIds).isEmpty()) {
             // If the entire Autofill Response is authenticated, AuthActivity is used
@@ -103,11 +104,17 @@ public class MyAutofillService extends AutofillService {
             callback.onSuccess(responseBuilder.build());
         } else {
             boolean datasetAuth = MyPreferences.getInstance(this).isDatasetAuth();
+
+            //从SharedPreferences中读取保存的数据
             HashMap<String, FilledAutofillFieldCollection> clientFormDataMap =
                     SharedPrefsAutofillRepository.getInstance().getFilledAutofillFieldCollection(
                             this, autofillFields.getFocusedHints(), autofillFields.getAllHints());
+
             FillResponse response = AutofillHelper.newResponse
                     (this, datasetAuth, autofillFields, clientFormDataMap);
+            if (DEBUG) Log.d(TAG, "onFillRequest response : " + response.toString());
+
+            //回调系统FillResponse对象
             callback.onSuccess(response);
         }
     }

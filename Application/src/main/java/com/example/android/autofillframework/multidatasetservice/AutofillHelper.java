@@ -31,6 +31,7 @@ import com.example.android.autofillframework.multidatasetservice.model.FilledAut
 import java.util.HashMap;
 import java.util.Set;
 
+import static com.example.android.autofillframework.CommonUtil.DEBUG;
 import static com.example.android.autofillframework.CommonUtil.TAG;
 
 /**
@@ -86,24 +87,28 @@ public final class AutofillHelper {
      * Wraps autofill data in a Response object (essentially a series of Datasets) which can then
      * be sent back to the client View.
      */
-    public static FillResponse newResponse(Context context,
-            boolean datasetAuth, AutofillFieldMetadataCollection autofillFields,
+    public static FillResponse newResponse(Context context, boolean datasetAuth,
+            AutofillFieldMetadataCollection autofillFields,
             HashMap<String, FilledAutofillFieldCollection> clientFormDataMap) {
+        if (DEBUG) Log.d(TAG, "AutofillHelper newResponse");
+
         FillResponse.Builder responseBuilder = new FillResponse.Builder();
+
         if (clientFormDataMap != null) {
             Set<String> datasetNames = clientFormDataMap.keySet();
             for (String datasetName : datasetNames) {
                 FilledAutofillFieldCollection filledAutofillFieldCollection =
                         clientFormDataMap.get(datasetName);
+
                 if (filledAutofillFieldCollection != null) {
-                    Dataset dataset = newDataset(context, autofillFields,
-                            filledAutofillFieldCollection, datasetAuth);
+                    Dataset dataset = newDataset(context, autofillFields, filledAutofillFieldCollection, datasetAuth);
                     if (dataset != null) {
                         responseBuilder.addDataset(dataset);
                     }
                 }
             }
         }
+
         if (autofillFields.getSaveType() != 0) {
             AutofillId[] autofillIds = autofillFields.getAutofillIds();
             responseBuilder.setSaveInfo

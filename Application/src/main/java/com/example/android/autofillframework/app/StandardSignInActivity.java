@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,8 +30,7 @@ public class StandardSignInActivity extends AppCompatActivity {
     private EditText mPasswordEditText;
 
     public static Intent getStartActivityIntent(Context context) {
-        Intent intent = new Intent(context, StandardSignInActivity.class);
-        return intent;
+        return new Intent(context, StandardSignInActivity.class);
     }
 
     @Override
@@ -42,18 +40,8 @@ public class StandardSignInActivity extends AppCompatActivity {
         setContentView(R.layout.login_activity);
         mUsernameEditText = findViewById(R.id.usernameField);
         mPasswordEditText = findViewById(R.id.passwordField);
-        findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
-        findViewById(R.id.clear).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetFields();
-            }
-        });
+        findViewById(R.id.login).setOnClickListener(v -> login());
+        findViewById(R.id.clear).setOnClickListener(v -> resetFields());
     }
 
     private void resetFields() {

@@ -17,6 +17,7 @@ package com.example.android.autofillframework.multidatasetservice.datasource;
 
 import android.content.Context;
 import android.util.ArraySet;
+import android.util.Log;
 
 import com.example.android.autofillframework.multidatasetservice.model.FilledAutofillFieldCollection;
 import com.google.gson.Gson;
@@ -25,6 +26,9 @@ import com.google.gson.GsonBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import static com.example.android.autofillframework.CommonUtil.DEBUG;
+import static com.example.android.autofillframework.CommonUtil.TAG;
 
 /**
  * Singleton autofill data repository that stores autofill fields to SharedPreferences.
@@ -52,13 +56,19 @@ public class SharedPrefsAutofillRepository implements AutofillDataSource {
     @Override
     public HashMap<String, FilledAutofillFieldCollection> getFilledAutofillFieldCollection(
             Context context, List<String> focusedAutofillHints, List<String> allAutofillHints) {
+        if (DEBUG) Log.d(TAG, "SharedPrefsAutofillRepository getFilledAutofillFieldCollection");
+
         boolean hasDataForFocusedAutofillHints = false;
+
         HashMap<String, FilledAutofillFieldCollection> clientFormDataMap = new HashMap<>();
         Set<String> clientFormDataStringSet = getAllAutofillDataStringSet(context);
+//        if (DEBUG) Log.d(TAG, "clientFormDataStringSet : " + clientFormDataStringSet);
+
         for (String clientFormDataString : clientFormDataStringSet) {
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
             FilledAutofillFieldCollection filledAutofillFieldCollection =
                     gson.fromJson(clientFormDataString, FilledAutofillFieldCollection.class);
+
             if (filledAutofillFieldCollection != null) {
                 if (filledAutofillFieldCollection.helpsWithHints(focusedAutofillHints)) {
                     // Saved data has data relevant to at least 1 of the hints associated with the
@@ -73,11 +83,8 @@ public class SharedPrefsAutofillRepository implements AutofillDataSource {
                 }
             }
         }
-        if (hasDataForFocusedAutofillHints) {
-            return clientFormDataMap;
-        } else {
-            return null;
-        }
+
+        return hasDataForFocusedAutofillHints ? clientFormDataMap : null;
     }
 
     @Override
@@ -105,7 +112,7 @@ public class SharedPrefsAutofillRepository implements AutofillDataSource {
     private Set<String> getAllAutofillDataStringSet(Context context) {
         return context.getApplicationContext()
                 .getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE)
-                .getStringSet(CLIENT_FORM_DATA_KEY, new ArraySet<String>());
+                .getStringSet(CLIENT_FORM_DATA_KEY, new ArraySet<>());
     }
 
     private void saveAllAutofillDataStringSet(Context context,
