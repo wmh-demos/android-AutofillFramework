@@ -51,6 +51,7 @@ public class MyAutofillService extends AutofillService {
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal,
             FillCallback callback) {
+        if (DEBUG) Log.d(TAG, "onFillRequest");
 
         //从FillRequest获得AssistStructure对象
         AssistStructure structure = request.getFillContexts()
@@ -113,7 +114,7 @@ public class MyAutofillService extends AutofillService {
 
             FillResponse response = AutofillHelper.newResponse
                     (this, datasetAuth, autofillFields, clientFormDataMap);
-            if (DEBUG) Log.d(TAG, "onFillRequest response : " + response.toString());
+            if (DEBUG) Log.d(TAG, "onFillRequest response : " + (response != null ? response.toString() : null));
 
             //回调系统FillResponse对象
             callback.onSuccess(response);
